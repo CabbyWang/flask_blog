@@ -3,7 +3,7 @@ from . import main
 from .forms import NameForm
 from ..models import User
 from .. import db
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, flash, render_template
 from ..email import send_email
 
 
@@ -18,8 +18,8 @@ def index():
             db.session.add(user)
             # db.session.commit()
             session['known'] = False
-            if app.config['FLASK_ADMIN']:
-                send_email(app.config['FLASK_ADMIN'], 'new subject', 'mail/new_user', user=user)
+            if main.config['FLASK_ADMIN']:
+                send_email(main.config['FLASK_ADMIN'], 'new subject', 'mail/new_user', user=user)
         else:
             session['known'] = True
         old_name = session.get('name')
@@ -31,7 +31,7 @@ def index():
                                             'name': session.get('name'), 'known': session.get('known')})
 
 
-@app.route('/user/<name>')
+@main.route('/user/<name>')
 def user(name):
     # return render_template('user.html', **{'name': name})
     return render_template('user.html', name=name)
